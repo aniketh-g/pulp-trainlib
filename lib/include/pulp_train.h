@@ -38,6 +38,7 @@
 #include "pulp_conv_naive_fp32.h"
 #include "pulp_dropout_fp32.h"
 #include "pulp_im2col_fp32.h"
+#include "pulp_im2col_partial_fp32.h"
 #include "pulp_instnorm_fp32.h"
 #include "pulp_interpolation_fp32.h"
 #include "pulp_linear_fp32.h"

@@ -76,6 +76,41 @@ struct im2col_args {
     int USE_DMA;
 };
 
+/**
+ * @brief Arguments for im2col_partial function
+ * @param input input blob of the conv layer
+ * @param c weight matrix blob of the conv layer
+ * @param output output blob of the conv layer
+ * @param pBuffer im2col buffer which will contain the transformed version of the data to be transformed
+ * @param Lpad left padding
+ * @param Rpad right padding
+ * @param Upad upper padding
+ * @param Dpad lower padding
+ * @param mod  0 stands for forward (im2col of the input feature map), 1 for backward (im2col and flip of output feature map)
+ * @param stride_w sets the amount of horizontal stride
+ * @param stride_h sets the amount of vertical stride
+ * @param HWC sets if the format of the input (mod=0) or output grad (mod=1) is CHW (HWC=0) or HWC (HWC=1). In case of HWC, channels of the same "pixel" are adjacent, while in CHW the width elements are adjacent. Set this according to the format of your own input or output format (check format!) 
+ * @param USE_DMA set this to 1 if your tensor data is in L2 and you want to im2col that data into local L1 stored im2colbuffer, using cluster DMA
+ * @param partial_numcols set this to the number of columns which you want in each partial im2col buffer.
+ * @param partial_iteration set this to the partial iteration number which you want to execute through the present funcation call
+ */
+struct im2col_partial_args {
+    struct blob *input;
+    struct blob *c;
+    struct blob *output;
+    float *pBuffer;
+    int Lpad;
+    int Rpad;
+    int Upad;
+    int Dpad;
+    int mod;
+    int stride_w;
+    int stride_h;
+    int HWC;
+    int USE_DMA;
+    int partial_numcols;
+    int partial_iteration;
+};
 
 /**
  * @brief Transposes an n-dimensional array, according to the required axis reordering,

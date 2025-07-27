@@ -1,4 +1,4 @@
-APP = im2col_fp32
+APP = im2col_partial_fp32
 
 # User settings
 DATA_BITS?=32				# 32=FP32, 16=FP16
@@ -7,6 +7,9 @@ IM2ROW?=0					# 0=Im2Col, 1=Im2Row
 MOD?=1 						# 0=Forward/WeightGrad, 1=InGrad
 DMA_ENABLE?=0				# Use Cluster DMA to move data or not
 HWC_format?=0				# CHW (=0) or HWC (=1) data format for the im2col
+PARTIAL_NUMCOLS?=2			# Partial factor for the im2col_partial operation, must be a divisor of Htot*Wtot
+PARTIAL_ITER?=0				# Partial iteration for the im2col_partial operation, must be between 0 and Htot*Wtot/PARTIAL_NUMCOLS - 1
+
 # Layer padding and stride
 LPAD?=0
 RPAD?=0
@@ -36,6 +39,8 @@ APP_CFLAGS += -DPROF_NET
 APP_CFLAGS += -DDATA_BITS=$(DATA_BITS)
 APP_CFLAGS += -DMOD=$(MOD)
 APP_CFLAGS += -DDMA_ENABLE=$(DMA_ENABLE)
+APP_CFLAGS += -DPARTIAL_NUMCOLS=$(PARTIAL_NUMCOLS)
+APP_CFLAGS += -DPARTIAL_ITER=$(PARTIAL_ITER)
 APP_CFLAGS += -DLPAD=$(LPAD)
 APP_CFLAGS += -DRPAD=$(RPAD)
 APP_CFLAGS += -DUPAD=$(UPAD)
@@ -60,8 +65,8 @@ APP_CFLAGS += -DSTATS
 APP_SRCS += $(TRAIN_LIB_SRCS)/pulp_train_utils_fp32.c
 APP_SRCS += $(TRAIN_LIB_SRCS)/pulp_train_utils_fp16.c
 APP_SRCS += $(TRAIN_LIB_SRCS)/pulp_matmul_fp32.c
-APP_SRCS += $(TRAIN_LIB_SRCS)/pulp_im2col_fp32.c
+APP_SRCS += $(TRAIN_LIB_SRCS)/pulp_im2col_partial_fp32.c
 APP_SRCS += $(TRAIN_LIB_SRCS)/pulp_matmul_fp16.c
-APP_SRCS += $(TRAIN_LIB_SRCS)/pulp_im2col_fp16.c
+# APP_SRCS += $(TRAIN_LIB_SRCS)/pulp_im2col_partial_fp16.c
 
 include $(RULES_DIR)/pmsis_rules.mk

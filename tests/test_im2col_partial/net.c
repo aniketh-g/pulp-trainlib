@@ -133,6 +133,8 @@ static inline void train() {
     im2col_partial_args.mod = MOD;
     im2col_partial_args.USE_DMA = DMA_ENABLE;
     im2col_partial_args.HWC = HWC_format;
+    im2col_partial_args.partial_numcols = PARTIAL_NUMCOLS;
+    im2col_partial_args.partial_iteration = PARTIAL_ITER;
 
 #if MOD == 0
     im2col_partial_args.Lpad = LPAD;
@@ -246,13 +248,13 @@ static inline void train() {
 #if IM2ROW == 0
     pi_cl_team_fork(NUM_CORES, pulp_im2col_partial_fp32, &im2col_partial_args);
 #else
-    pi_cl_team_fork(NUM_CORES, pulp_im2row_fp32, &im2col_partial_args);
+    pi_cl_team_fork(NUM_CORES, pulp_im2row_partial_fp32, &im2col_partial_args);
 #endif
 #elif DATA_BITS == 16
 #if IM2ROW == 0
     pi_cl_team_fork(NUM_CORES, pulp_im2col_partial_fp16, &im2col_partial_args);
 #else
-    pi_cl_team_fork(NUM_CORES, pulp_im2row_fp16, &im2col_partial_args);
+    pi_cl_team_fork(NUM_CORES, pulp_im2row_partial_fp16, &im2col_partial_args);
 #endif
 #endif
 
